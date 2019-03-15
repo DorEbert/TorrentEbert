@@ -1,0 +1,12 @@
+C:\Users\dor\Desktop\סרבר\Common\bin\Debug\Common.dll
+C:\Users\dor\Desktop\סרבר\Common\bin\Debug\Common.pdb
+C:\Users\dor\Desktop\סרבר\Common\obj\Debug\Common.csprojAssemblyReference.cache
+C:\Users\dor\Desktop\סרבר\Common\obj\Debug\Common.csproj.CoreCompileInputs.cache
+C:\Users\dor\Desktop\סרבר\Common\obj\Debug\Common.dll
+C:\Users\dor\Desktop\סרבר\Common\obj\Debug\Common.pdb
+C:\Users\dor\source\repos\TorrentEbert\Common\bin\Debug\Common.dll
+C:\Users\dor\source\repos\TorrentEbert\Common\bin\Debug\Common.pdb
+C:\Users\dor\source\repos\TorrentEbert\Common\obj\Debug\Common.csproj.CoreCompileInputs.cache
+C:\Users\dor\source\repos\TorrentEbert\Common\obj\Debug\Common.dll
+C:\Users\dor\source\repos\TorrentEbert\Common\obj\Debug\Common.pdb
+C:\Users\dor\source\repos\TorrentEbert\Common\obj\Debug\Common.csprojAssemblyReference.cache
