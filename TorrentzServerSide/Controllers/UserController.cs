@@ -46,12 +46,12 @@ namespace TorrentzServerSide.Controllers
                 return InternalServerError(e);
             }
         }
-        [HttpPost]
-        public IHttpActionResult DeleteUser(User user)
+        [HttpDelete]
+        public IHttpActionResult DeleteUser(int Application_User_ID)
         {
             try
             {
-                _users.Delete(user.Application_User_ID.ToString());
+                _users.Delete(Application_User_ID.ToString());
                 return Ok();
             }
             catch (Exception e)
@@ -59,7 +59,7 @@ namespace TorrentzServerSide.Controllers
                 return InternalServerError(e);
             }
         }
-        [HttpPost]
+        [HttpPut]
         public IHttpActionResult UpdateUser(User user)
         {
             try
@@ -106,7 +106,7 @@ namespace TorrentzServerSide.Controllers
                 List<string> result = _users.IpAdressesPerFileID(FileName);
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }
-            catch (Exception e)
+            catch
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new List<string>());
             }

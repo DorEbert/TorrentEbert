@@ -1,4 +1,4 @@
-﻿using ClassLibrary1;
+﻿
 using Common.Models;
 using Newtonsoft.Json;
 using System;
@@ -13,7 +13,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using Torrent_Server_Side.Commom.Models;
 
 namespace Torrent_Client_Side
@@ -33,12 +32,12 @@ namespace Torrent_Client_Side
         private List<DownloadFile> myDownloadFiles;
         private string downloadPath;
         private string uploadPath;
-        private Proxy _proxy;
+        private Proxy.Proxy _proxy;
 
         private TcpClient client;
         private bool IsToListen = true;
 
-        public FileTransfer(string downloadPath, string uploadPath,Proxy proxy)
+        public FileTransfer(string downloadPath, string uploadPath, Proxy.Proxy proxy)
         {
 
             InitializeComponent();
@@ -67,25 +66,13 @@ namespace Torrent_Client_Side
         }
         private async Task<HttpResponseMessage> InitialFilesTable(string search_parameter = "")
         {
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response;
-                string responseBody;
-
-                string requestURI = ConfigurationManager.ConnectionStrings[ADMIN_FILES_URI].ToString();
-                if (search_parameter != "")
-                {
-                    response = await client.GetAsync(requestURI + "/?search_parameter=" + search_parameter.Trim());
-                }
-                else
-                {
-                    response = await client.GetAsync(requestURI);
-                }
-                responseBody = response.Content.ReadAsStringAsync().Result;
-                myFilesList = JsonConvert.DeserializeObject<List<FilesInfo>>(responseBody);
-                FilesTable.ItemsSource = myFilesList;
-                return response;
-            }
+            string requestURI = ConfigurationManager.ConnectionStrings[ADMIN_FILES_URI].ToString();
+            HttpResponseMessage response = await _proxy.GetListOfFileAsync(requestURI, search_parameter);
+            string responseBody;   
+            responseBody = response.Content.ReadAsStringAsync().Result;
+            myFilesList = JsonConvert.DeserializeObject<List<FilesInfo>>(responseBody);
+            FilesTable.ItemsSource = myFilesList;
+            return response;      
         }
 
         protected async void SearchButton_OnClickAsync(object sender, EventArgs e)
@@ -101,12 +88,11 @@ namespace Torrent_Client_Side
             }
 
         }
-
         private void listViewResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            object t = FilesTable.SelectedItems[0];
-            System.Reflection.PropertyInfo pi = t.GetType().GetProperty("FileName");
-            chosenFileName = (String)(pi.GetValue(t, null));
+            object selected_File = FilesTable.SelectedItems[0];
+            System.Reflection.PropertyInfo pi = selected_File.GetType().GetProperty("FileName");
+            chosenFileName = (String)(pi.GetValue(selected_File, null));
         }
         private void Listener()
         {
@@ -174,31 +160,19 @@ namespace Torrent_Client_Side
 
         private async Task<List<string>> GetListOfIPAdresses(string FileName)
         {
-            using (var client = new HttpClient())
-            {
-                string connection_string = ConfigurationManager.ConnectionStrings[IPADRESSPERFILE].ToString();
-                string url = connection_string + "/?FileName=" + FileName;
-                HttpResponseMessage response;
-                response = await client.GetAsync(url);
-                string responseBody = response.Content.ReadAsStringAsync().Result;
-                List<string> myFilesList = JsonConvert.DeserializeObject<List<string>>(responseBody);
-                return myFilesList;
-            }
-
-          
+            string connection_string = ConfigurationManager.ConnectionStrings[IPADRESSPERFILE].ToString();
+            string responseBody =  await _proxy.GetListOfIPAdressPerFile(connection_string,FileName);
+            List<string> myFilesList = JsonConvert.DeserializeObject<List<string>>(responseBody);
+            return myFilesList;
         }
+
+ 
+
         private async void Window_Closing(object sender, CancelEventArgs e)
         {
             string connection_string = ConfigurationManager.ConnectionStrings[CONNECTIONSLOGOUTRINGS].ToString();
-            string url = connection_string + "/?username=" + _proxy._user.UserName;
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-            }
-
+            await _proxy.CloseWindowReport(connection_string);
             IsToListen = false;
-            //client.Close();
-
         }
         private async void UploadFilesToServer()
         {
@@ -219,13 +193,9 @@ namespace Torrent_Client_Side
             FilesPerUser filesPerUser = new FilesPerUser();
             filesPerUser._User = _proxy._user;
             filesPerUser._FilesList = fileInfos;
-            using (var client = new HttpClient())
-            {
-                HttpResponseMessage response = await client.PostAsJsonAsync(connectionString, filesPerUser);
-                //  return response.IsSuccessStatusCode;
-            }
+            await _proxy.UpdateFilesAtServer(connectionString, filesPerUser);
 
-        }
+        }      
         private void Conncet_Click(object sender, RoutedEventArgs e)
         {
             Task<DownloadFile> task = Task<DownloadFile>.Run(() =>
@@ -234,10 +204,7 @@ namespace Torrent_Client_Side
             });
             myDownloadFiles.Add(task.Result);
             DownloadTable.ItemsSource = myDownloadFiles;
-
-
         }
-
         private async Task<DownloadFile> DownloadFile()
         {
             if (string.IsNullOrEmpty(chosenFileName))

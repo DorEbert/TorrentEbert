@@ -1,16 +1,11 @@
-﻿using ClassLibrary1;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Configuration;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Threading.Tasks;
 using System.Windows;
-using Torrent_Server_Side.Commom.Models;
-using FileInfo = Torrent_Server_Side.Commom.Models.FilesInfo;
+using Common.Models;
+using FireSharp.Interfaces;
+using FireSharp.Config;
+using FireSharp.Response;
+using Proxy;
 
 namespace Torrent_Client_Side
 {
@@ -30,9 +25,16 @@ namespace Torrent_Client_Side
         public static string connection_string;
         private string downloadPath;
         private string uploadPath;
-        private Proxy _proxy;
+        private Proxy.Proxy _proxy;
+        
 
+        private IFirebaseConfig ifc = new FirebaseConfig()
+        {
+            AuthSecret = "0vkUIyQqDLMGQienml0tNqMrDJZtSgub32sy4wzF",
+            BasePath = "https://torrentebert.firebaseio.com/"
+        };
 
+        private IFirebaseClient client;
         public MainWindow()
         {
             InitializeComponent();
@@ -43,7 +45,8 @@ namespace Torrent_Client_Side
                 connection_string = ConfigurationManager.ConnectionStrings[CONNECTIONSLOGINTRINGS].ToString();
                 downloadPath = ConfigurationManager.ConnectionStrings[DOWNLOADPATHFOLDER].ToString();
                 uploadPath = ConfigurationManager.ConnectionStrings[UPLOADPATHFOLDER].ToString();
-                _proxy = new Proxy();
+                client = new FireSharp.FirebaseClient(ifc);
+                _proxy = new Proxy.Proxy();
             }
             catch (Exception e)
             {
@@ -51,18 +54,37 @@ namespace Torrent_Client_Side
             }
         }
 
-        private async void Button_Log_In_Click(object sender, RoutedEventArgs e)
+        private void Button_Log_In_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(uploadPath) || string.IsNullOrEmpty(downloadPath))
+            /*if (string.IsNullOrEmpty(uploadPath) || string.IsNullOrEmpty(downloadPath))
             {
                 MessageBox.Show("Please choose upload and download folders");
                 return;
             }
             string IPAdress = ConfigurationManager.ConnectionStrings[USER_IP].ToString();
             bool is_succeed = await _proxy.Login(this.User_Name.Text, this.User_Password.Password, IPAdress,connection_string);
-            if (!is_succeed) return;
-            FileTransfer sign_up_window = new FileTransfer(downloadPath, uploadPath, _proxy);
-            this.Close();           
+            if (!is_succeed) return;*/
+            #region Condition
+
+            if (string.IsNullOrWhiteSpace(this.User_Name.Text) ||
+                string.IsNullOrWhiteSpace(this.User_Password.Password))
+            {
+                MessageBox.Show("Please fill all the fields");
+                return;
+            }
+            #endregion
+            FirebaseResponse res = client.Get(@"User/" + User_Name.Text);
+            FireBaseUser ResUser = res.ResultAs<FireBaseUser>(); // dataBase Result
+            FireBaseUser CurUser = new FireBaseUser()
+            {
+                UserName = User_Name.Text,
+                Password = User_Password.Password
+            };
+            if (ResUser.Equals(CurUser))
+            {
+                FileTransfer sign_up_window = new FileTransfer(downloadPath, uploadPath, _proxy);
+                this.Close();
+            }
         }
 
         private void Button_UploadFolder(object sender, RoutedEventArgs e)
@@ -93,6 +115,12 @@ namespace Torrent_Client_Side
         public void Dispose()
         {
             this.Dispose();
+        }
+
+        private void Button_SignUp_Click(object sender, RoutedEventArgs e)
+        {
+            SignUp signUp = new SignUp();
+            signUp.ShowDialog();
         }
     }
 }

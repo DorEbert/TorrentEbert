@@ -10,3 +10,9 @@ C:\Users\dor\source\repos\TorrentEbert\Common\obj\Debug\Common.csproj.CoreCompil
 C:\Users\dor\source\repos\TorrentEbert\Common\obj\Debug\Common.dll
 C:\Users\dor\source\repos\TorrentEbert\Common\obj\Debug\Common.pdb
 C:\Users\dor\source\repos\TorrentEbert\Common\obj\Debug\Common.csprojAssemblyReference.cache
+C:\Users\dor\source\repos\TorrentEbert\TorrentEbert\Common\bin\Debug\Common.dll
+C:\Users\dor\source\repos\TorrentEbert\TorrentEbert\Common\bin\Debug\Common.pdb
+C:\Users\dor\source\repos\TorrentEbert\TorrentEbert\Common\obj\Debug\Common.csprojAssemblyReference.cache
+C:\Users\dor\source\repos\TorrentEbert\TorrentEbert\Common\obj\Debug\Common.csproj.CoreCompileInputs.cache
+C:\Users\dor\source\repos\TorrentEbert\TorrentEbert\Common\obj\Debug\Common.dll
+C:\Users\dor\source\repos\TorrentEbert\TorrentEbert\Common\obj\Debug\Common.pdb

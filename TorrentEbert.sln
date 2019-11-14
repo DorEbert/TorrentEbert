@@ -15,7 +15,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebPortal", "WebPortal\WebP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TorrentzServerSide", "TorrentzServerSide\TorrentzServerSide.csproj", "{606F517B-A4AE-403F-B5E4-2E051548D1E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy", "ClassLibrary1\Proxy.csproj", "{B37DC35F-9AD8-4C15-B48B-77FCE69C44EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyManager", "ClassLibrary1\ProxyManager.csproj", "{B37DC35F-9AD8-4C15-B48B-77FCE69C44EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{12B58E7F-3DF5-4A55-9935-1BADAAC810A1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E1A51F13-4518-4C37-A67B-ED15115DCDA6} = {E1A51F13-4518-4C37-A67B-ED15115DCDA6}
+		{606F517B-A4AE-403F-B5E4-2E051548D1E0} = {606F517B-A4AE-403F-B5E4-2E051548D1E0}
+		{BF59E4F4-DD8A-48A1-9970-64879D816979} = {BF59E4F4-DD8A-48A1-9970-64879D816979}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy", "Proxy\Proxy.csproj", "{38FC541E-2F60-4195-BDA7-F3A698840D78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +60,14 @@ Global
 		{B37DC35F-9AD8-4C15-B48B-77FCE69C44EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B37DC35F-9AD8-4C15-B48B-77FCE69C44EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B37DC35F-9AD8-4C15-B48B-77FCE69C44EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12B58E7F-3DF5-4A55-9935-1BADAAC810A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12B58E7F-3DF5-4A55-9935-1BADAAC810A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12B58E7F-3DF5-4A55-9935-1BADAAC810A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12B58E7F-3DF5-4A55-9935-1BADAAC810A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38FC541E-2F60-4195-BDA7-F3A698840D78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38FC541E-2F60-4195-BDA7-F3A698840D78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38FC541E-2F60-4195-BDA7-F3A698840D78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38FC541E-2F60-4195-BDA7-F3A698840D78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

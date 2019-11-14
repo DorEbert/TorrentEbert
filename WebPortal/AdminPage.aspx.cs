@@ -1,15 +1,13 @@
 ﻿using Newtonsoft.Json;
+using Proxy;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -19,14 +17,17 @@ namespace WebPortal
 {
     public partial class AdminPage : System.Web.UI.Page
     {
-        public const string ADMIN_FILES_URI = "Admin-Files";
-        public const string ADMIN_USERS_URI = "Admin-Users";
-        public const string DELETE_USER_URI = "Delete-User";
-        public const string UPDATE_USER_URI = "Update-User";
+        public const string ADMIN_FILES_URL = "Admin-Files";
+        public const string ADMIN_USERS_URL = "Admin-Users_Table";
+        public const string DELETE_USER_URL = "Delete-User";
+        public const string UPDATE_USER_URL = "Update-User";
+        private Proxy.Proxy _proxy;
+
         protected async void Page_Load(object sender, EventArgs e)
         {
             try
             {
+                _proxy = new Proxy.Proxy();
                 await onloadAsync();
             }
             catch (Exception exception)
@@ -37,7 +38,6 @@ namespace WebPortal
         }
         async Task<bool> onloadAsync()
         {
-         
                 HttpResponseMessage response;
                 response = await InitialFilesTable();
                 await InitialUsersTable();
@@ -47,53 +47,38 @@ namespace WebPortal
         }
         private async Task<HttpResponseMessage> InitialFilesTable(string search_parameter = "")
         {
-            using (var client = new HttpClient())
+            int NumberOfRows;
+            HttpResponseMessage response;
+            string responseBody;
+            NumberOfRows = FilesTable.Rows.Count;
+            for (int i = 0; i < NumberOfRows; i++)
             {
-                int NumberOfRows;
-                HttpResponseMessage response;
-                string responseBody;
-                NumberOfRows = FilesTable.Rows.Count;
-                for (int i = 0; i < NumberOfRows; i++)
-                {
-                    if (FilesTable.Rows.Count > 1)
-                        FilesTable.Rows.Remove(FilesTable.Rows[1]);
-                }
-
-                string requestURI = ConfigurationManager.ConnectionStrings[ADMIN_FILES_URI].ToString();
-                if (search_parameter != "")
-                {
-                    
-                    response = await client.GetAsync(requestURI  + "/?search_parameter="+ search_parameter.Trim());
-
-                }
-                else
-                {
-                    response = await client.GetAsync(requestURI);
-                }
-                responseBody = response.Content.ReadAsStringAsync().Result;
-                List<FilesInfo> myFilesList = JsonConvert.DeserializeObject<List<FilesInfo>>(responseBody);
-                BuildTable(myFilesList, FilesTable);
-                return response;
+                if (FilesTable.Rows.Count > 1)
+                    FilesTable.Rows.Remove(FilesTable.Rows[1]);
             }
+            string requestURI = ConfigurationManager.ConnectionStrings[ADMIN_FILES_URL].ToString();
+            response = await _proxy.GetListOfFileAsync(requestURI, search_parameter.Trim());
+            responseBody = response.Content.ReadAsStringAsync().Result;
+            List<FilesInfo> myFilesList = JsonConvert.DeserializeObject<List<FilesInfo>>(responseBody);
+            BuildTable(myFilesList, FilesTable);
+            return response;
         }
 
         private async Task InitialUsersTable()
         {
-            string requestURI = ConfigurationManager.ConnectionStrings[ADMIN_USERS_URI].ToString();
-            using (var client = new HttpClient())
+            string requestURI = ConfigurationManager.ConnectionStrings[ADMIN_USERS_URL].ToString();
+            List<User> myUsersList;
+            string responseBody;
+            int NumberOfRows = UsersTable.Rows.Count;
+            for (int i = 0; i < NumberOfRows; i++)
             {
-                int NumberOfRows = UsersTable.Rows.Count;
-                for (int i = 0; i < NumberOfRows; i++)
-                {
-                    if (UsersTable.Rows.Count > 1)
-                        UsersTable.Rows.Remove(UsersTable.Rows[1]);
-                }
-                var response = await client.GetAsync(requestURI);
-                var responseBody = response.Content.ReadAsStringAsync().Result;
-                List<User> myUsersList = JsonConvert.DeserializeObject<List<User>>(responseBody);
-                BuildTable(myUsersList, UsersTable);
+                if (UsersTable.Rows.Count > 1)
+                    UsersTable.Rows.Remove(UsersTable.Rows[1]);
             }
+            responseBody = await _proxy.getUsersFromServer(requestURI);
+            myUsersList = JsonConvert.DeserializeObject<List<User>>(responseBody); BuildTable(myUsersList, UsersTable);
         }
+       
 
         public void BuildTable<T>(List<T> Data,HtmlTable theTable)
         {
@@ -116,7 +101,9 @@ namespace WebPortal
             bool is_succeed = false;
             try
             {
-                is_succeed = await DeleteUser_Async(user);
+                string requestURI = ConfigurationManager.ConnectionStrings[DELETE_USER_URL].ToString();
+                StringContent content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json");
+                is_succeed = await _proxy.DeleteUser_Async(requestURI,user.Application_User_ID);//, content);
                 await onloadAsync();
             }
             catch (Exception exception)
@@ -148,17 +135,6 @@ namespace WebPortal
             user.Password = ThePassword;
             return user;
         }
-
-        static async Task<bool> DeleteUser_Async(User user)
-        {
-            using (var client = new HttpClient())
-            {
-                string requestURI = ConfigurationManager.ConnectionStrings[DELETE_USER_URI].ToString();
-                var response = await client.PostAsync(requestURI, new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json"));
-                return response.IsSuccessStatusCode;
-            }
-        }
-
         protected async void UpdateButtonAsync(object sender, EventArgs e)
         {
             var user = GetUser();
@@ -180,13 +156,11 @@ namespace WebPortal
 
         async Task<bool> UpdateUser_Async(User user)
         {
-            using (var client = new HttpClient())
-            {
-                string requestURI = ConfigurationManager.ConnectionStrings[UPDATE_USER_URI].ToString();
-                var response = await client.PostAsync(requestURI, new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(user), Encoding.UTF8, "application/json"));
-                return response.IsSuccessStatusCode;
-            }
-        }
+            string requestURL = ConfigurationManager.ConnectionStrings[UPDATE_USER_URL].ToString();
+            StringContent content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(user), Encoding.UTF8,
+                "application/json");
+            return await _proxy.UpdateUser(requestURL, user, content);
+        }    
 
         protected async void SearchButton_OnClickAsync(object sender, EventArgs e)
         {

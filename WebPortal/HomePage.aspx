@@ -7,7 +7,7 @@
     <title></title>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="MainPageForm" runat="server">
             <h1>Torrentz</h1>
             <div class="vertical-menu">
                 <a href="#" class="active">Home</a>
@@ -16,18 +16,19 @@
             </div>
     </form>
 </body>
+</html>
 <style>
-.vertical-menu {
-  width: 200px;
-}
+    .vertical-menu {
+      width: 200px;
+    }
 
-.vertical-menu a {
-  background-color: #eee;
-  color: black;
-  display: block;
-  padding: 12px;
-  text-decoration: none;
-}
+    .vertical-menu a {
+      background-color: #eee;
+      color: black;
+      display: block;
+      padding: 12px;
+      text-decoration: none;
+    }
 
 .vertical-menu a:hover {
   background-color: #ccc;
@@ -38,4 +39,3 @@
   color: white;
 }
 </style>
-</html>

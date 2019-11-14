@@ -1,5 +1,7 @@
-﻿namespace Torrent_Server_Side.Commom.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+namespace Torrent_Server_Side.Commom.Models
 {
+    [Table("FilesInfo")]
     public class FilesInfo
     {
         public int    Files_ID { get; set; }

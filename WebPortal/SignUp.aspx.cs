@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using Microsoft.Ajax.Utilities;
 using Torrent_Server_Side.Commom.Models;
 
 namespace WebPortal
@@ -16,23 +11,20 @@ namespace WebPortal
     public partial class SignUp : System.Web.UI.Page
     {
         public const string USERCONTROLLER_SIGNUP = "UserController-SignUp";
+        private Proxy.Proxy _proxy;
         protected void Page_Load(object sender, EventArgs e)
         {
-       
-
+            _proxy = new Proxy.Proxy();
         }
 
-        static async Task<bool> SignUp_Async(User user)
+        public async Task<bool> SignUp_Async(User user)
         {
-            using (var client = new HttpClient())
-            {
-                string requestURI = ConfigurationManager.ConnectionStrings[USERCONTROLLER_SIGNUP].ToString();
-                var response = await client.PostAsync(requestURI, new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(user), Encoding.UTF8,"application/json"));   
-                return response.IsSuccessStatusCode;
-            }
+            string requestURI = ConfigurationManager.ConnectionStrings[USERCONTROLLER_SIGNUP].ToString();
+            StringContent content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(user), Encoding.UTF8,
+                "application/json");
+            return await _proxy.SignUpUser(user, requestURI, content);
         }
-
-
+        
         protected async void SignUp_ClickAsync(object sender, EventArgs e)
         {
             string TheUserName = txt_UserName.Value;

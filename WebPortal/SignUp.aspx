@@ -14,18 +14,18 @@
             <hr>
 
             <label for="UserName"><b>UserName</b></label>
-            <input id="txt_UserName" type="text" runat="server" placeholder="Enter UserName" name="txt_UserName" required>
+            <input id="txt_UserName" type="text" runat="server" placeholder="Enter UserName" name="txtApplicationUsersName" required/>
 
             <label for="psw"><b>Password</b></label>
-            <input id="txt_Password" type="password" runat="server" placeholder="Enter Password" name="psw" required>
+            <input id="txt_Password" type="password" runat="server" placeholder="Enter Password" name="psw" required/>
 
             <label for="psw-repeat"><b>Repeat Password</b></label>
-            <input id="txt_pswrepeat" type="password" runat="server" placeholder="Repeat Password" name="pswrepeat" required>
+            <input id="txt_pswrepeat" type="password" runat="server" placeholder="Repeat Password" name="pswrepeat" required/>
             <label for="FirstName"><b>First Name</b></label>
-            <input id="txt_FirstName" type="text" runat="server" placeholder="First Name" name="txt_FirstName" required>
+            <input id="txt_FirstName" type="text" runat="server" placeholder="First Name" name="txt_FirstName" required/>
             
             <label for="LastName"><b>Last Name</b></label>
-            <input id="txt_LastName" type="text" runat="server" placeholder="Last Name" name="txt_LastName" required>
+            <input id="txt_LastName" type="text" runat="server" placeholder="Last Name" name="txt_LastName" required/>
             
             <label for="date"><b>Date Of Birth</b></label>
             <input id="dt_DateOfBirth" runat="server" type="datetime-local" placeholder="Date Of Birth" name="DateOfBirth" required><br />
@@ -35,10 +35,11 @@
             </div>
     </form>
 </body>
+
+</html>
 <style>
 body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box}
-
 /* Full-width input fields */
 input[type=text], input[type=password] {
   width: 100%;
@@ -88,4 +89,3 @@ button:hover {
 }
 
 </style>
-</html>

@@ -28,7 +28,7 @@ namespace TorrentzServerSide.Controllers
                 List<User> result = _dbHandler.ListOfUsers();
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }
-            catch (Exception e)
+            catch
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new DataTable());
             }
@@ -41,7 +41,7 @@ namespace TorrentzServerSide.Controllers
                 List<FilesInfo> result = _dbHandler.ListOfFile(search_parameter);
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }
-            catch (Exception e)
+            catch 
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, new DataTable());
             }

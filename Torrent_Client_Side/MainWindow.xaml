@@ -33,6 +33,7 @@
         <Label Content="בחר תיקיית העלאה" HorizontalAlignment="Left" VerticalAlignment="Top"  RenderTransformOrigin="8.441,3.404" Height="26" Width="114" Foreground="White" Margin="191,9,0,0" Grid.Row="3" Grid.ColumnSpan="2"/>
         <Button Content="...חיפוש"  Click="Button_DownloadFolder" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Background="White" Margin="91,38,0,0" Grid.Row="3" RenderTransformOrigin="0.211,0.701" Grid.RowSpan="2"/>
         <Label Content="בחר תיקיית הורדות" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="8.441,3.404" Height="26" Width="114" Foreground="White" Margin="191,35,0,0" Grid.Row="3" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        <Button Content="הרשם" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="47.2,17,0,0" Background="#FFC80808" Height="19" Click="Button_SignUp_Click" Grid.Row="4" Grid.Column="1" />
 
     </Grid>
 </Window>
